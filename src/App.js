@@ -4,7 +4,7 @@ import CreateAccountPage from './pages/CreateAccountPage';
 import LoginPage from './pages/LoginPage';
 import PricingPage from './pages/PricingPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
-import FlowSetupWizard from './pages/flowerSeteup';
+import FlowSetupWizard from './pages/FlowSetup';
 
 function App() {
   const hashPath = window.location.hash.replace(/^#/, '').split('?')[0];
