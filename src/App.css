@@ -4077,16 +4077,9 @@
   display: grid;
   place-items: center;
   background:
-<<<<<<< HEAD
     radial-gradient(circle at 50% 0%, rgba(167, 139, 250, 0.12), transparent 30%),
     #ffffff;
   color: #181b22;
-=======
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.24), transparent 30%),
-    radial-gradient(circle at 12% 12%, rgba(255, 255, 255, 0.18), transparent 26%),
-    linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);
-  color: #f7f5ff;
->>>>>>> 191bd18 (jackkkk)
 }
 
 .setup-back {
@@ -4247,17 +4240,10 @@
   width: 70px;
   height: 70px;
   margin: 0 auto 24px;
-<<<<<<< HEAD
   border: 1px solid var(--accent-soft);
   border-radius: 50%;
   background: rgba(167, 139, 250, 0.1);
   box-shadow: 0 0 0 12px rgba(167, 139, 250, 0.05);
-=======
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 0 0 12px rgba(255, 255, 255, 0.08);
->>>>>>> 191bd18 (jackkkk)
 }
 
 .payment-success__icon svg {
@@ -4285,28 +4271,17 @@
 .payment-success>p {
   max-width: 320px;
   margin: 12px auto 28px;
-<<<<<<< HEAD
   color: #6c7280;
-=======
-  color: #f3efff;
->>>>>>> 191bd18 (jackkkk)
   font-size: 0.98rem;
   line-height: 1.5;
 }
 
 .payment-details {
   overflow: hidden;
-<<<<<<< HEAD
   border: 1px solid var(--accent-border);
   border-radius: 10px;
   background: #ffffff;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.08);
-=======
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  background: rgba(34, 22, 61, 0.88);
-  box-shadow: 0 24px 60px rgba(54, 18, 117, 0.28);
->>>>>>> 191bd18 (jackkkk)
   text-align: left;
 }
 
@@ -4398,13 +4373,8 @@
   min-height: 50px;
   margin-top: 24px;
   border-radius: 8px;
-<<<<<<< HEAD
   background: linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%);
   color: #ffffff;
-=======
-  background: #ffffff;
-  color: #7C3AED;
->>>>>>> 191bd18 (jackkkk)
   font-size: 0.92rem;
   font-weight: 900;
   text-decoration: none;

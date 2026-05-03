@@ -67,7 +67,7 @@ function VerifyEmailPage() {
       sessionStorage.removeItem('pendingVerificationEmail');
       setStatus({ type: 'success', message: 'Email verified. Redirecting...' });
       window.setTimeout(() => {
-        goTo(ROUTES.pricing, `?verified=1&email=${encodeURIComponent(email)}`);
+        goTo(ROUTES.login, `?verified=1&email=${encodeURIComponent(email)}&next=${encodeURIComponent(ROUTES.pricing)}`);
       }, 900);
     } catch (error) {
       setStatus({ type: 'error', message: error.message });

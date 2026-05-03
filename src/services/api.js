@@ -1,4 +1,6 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://inobyte-backend.onrender.com/api';
+const REGISTER_API_URL = 'http://localhost:5000/api/auth/register';
+const REQUEST_TIMEOUT_MS = 20000;
 
 function getAuthToken() {
   return sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
@@ -19,6 +21,9 @@ function buildQuery(params = {}) {
 
 async function apiRequest(path, options = {}) {
   const token = Object.prototype.hasOwnProperty.call(options, 'token') ? options.token : getAuthToken();
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const requestUrl = /^https?:\/\//i.test(path) ? path : `${API_BASE_URL}${path}`;
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers
@@ -28,10 +33,23 @@ async function apiRequest(path, options = {}) {
     headers.Authorization = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers
-  });
+  let response;
+
+  try {
+    response = await fetch(requestUrl, {
+      ...options,
+      headers,
+      signal: controller.signal
+    });
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error('Server took too long to respond. Please try again.');
+    }
+
+    throw new Error('Could not connect to the server. Please try again.');
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
 
   const text = await response.text();
   let data = {};
@@ -58,7 +76,7 @@ function postJson(path, payload, options = {}) {
 }
 
 export const authApi = {
-  register: (payload) => postJson('/auth/register', payload),
+  register: (payload) => postJson(REGISTER_API_URL, payload, { token: null }),
   verifyOtp: (payload) => postJson('/auth/verify-otp', payload),
   resendOtp: (payload) => postJson('/auth/resend-otp', payload),
   login: (payload) => postJson('/auth/login', payload),

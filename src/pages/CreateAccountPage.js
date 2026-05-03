@@ -32,13 +32,8 @@ function CreateAccountPage() {
       return;
     }
 
-    if (form.password.length < 8) {
-      setStatus({ type: 'error', message: 'Password must be at least 8 characters.' });
-      return;
-    }
-
     if (!form.acceptedTerms) {
-      setStatus({ type: 'error', message: 'Please accept the terms before creating your account.' });
+      setStatus({ type: 'error', message: 'Please accept the terms to continue.' });
       return;
     }
 
@@ -47,20 +42,17 @@ function CreateAccountPage() {
 
     try {
       const data = await authApi.register({
+        name: form.name.trim(),
         email: form.email.trim(),
         password: form.password
       });
-      const token = data.token || data.authToken || data.accessToken;
+      const otp = data.otpPreview || data.otp || '';
 
       sessionStorage.setItem('pendingVerificationEmail', form.email.trim());
-      sessionStorage.setItem('userEmail', form.email.trim());
-
-      if (token) {
-        sessionStorage.setItem('authToken', token);
-      }
-
-      const otpQuery = data.otpPreview ? `&otp=${encodeURIComponent(data.otpPreview)}` : '';
-      goTo(ROUTES.verifyEmail, `?email=${encodeURIComponent(form.email.trim())}${otpQuery}`);
+      setStatus({ type: 'success', message: 'Account created. Redirecting...' });
+      window.setTimeout(() => {
+        goTo(ROUTES.verifyEmail, `?email=${encodeURIComponent(form.email.trim())}${otp ? `&otp=${encodeURIComponent(otp)}` : ''}`);
+      }, 700);
     } catch (error) {
       setStatus({ type: 'error', message: error.message });
     } finally {
@@ -96,7 +88,15 @@ function CreateAccountPage() {
             <span>Full Name</span>
             <div className="auth-input">
               <UserIcon />
-              <input name="name" type="text" placeholder="John Doe" value={form.name} onChange={updateField} autoComplete="name" />
+              <input
+                name="name"
+                type="text"
+                placeholder="John Doe"
+                value={form.name}
+                onChange={updateField}
+                autoComplete="name"
+                required
+              />
             </div>
           </label>
 
@@ -104,7 +104,15 @@ function CreateAccountPage() {
             <span>Work Email</span>
             <div className="auth-input">
               <MailIcon />
-              <input name="email" type="email" placeholder="john@company.com" value={form.email} onChange={updateField} autoComplete="email" required />
+              <input
+                name="email"
+                type="email"
+                placeholder="john@company.com"
+                value={form.email}
+                onChange={updateField}
+                autoComplete="email"
+                required
+              />
             </div>
           </label>
 
@@ -112,8 +120,22 @@ function CreateAccountPage() {
             <span>Password</span>
             <div className="auth-input">
               <LockIcon />
-              <input name="password" type={showPassword ? 'text' : 'password'} placeholder="********" value={form.password} onChange={updateField} autoComplete="new-password" required minLength="8" />
-              <button type="button" className="auth-input__icon-button" aria-label="Show password" onClick={() => setShowPassword((visible) => !visible)}>
+              <input
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="********"
+                value={form.password}
+                onChange={updateField}
+                autoComplete="new-password"
+                required
+                minLength="8"
+              />
+              <button
+                type="button"
+                className="auth-input__icon-button"
+                aria-label="Show password"
+                onClick={() => setShowPassword((visible) => !visible)}
+              >
                 <EyeIcon />
               </button>
             </div>
@@ -123,21 +145,43 @@ function CreateAccountPage() {
             <span>Confirm Password</span>
             <div className="auth-input">
               <LockIcon />
-              <input name="confirmPassword" type={showPassword ? 'text' : 'password'} placeholder="********" value={form.confirmPassword} onChange={updateField} autoComplete="new-password" required minLength="8" />
-              <button type="button" className="auth-input__icon-button" aria-label="Show password" onClick={() => setShowPassword((visible) => !visible)}>
+              <input
+                name="confirmPassword"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="********"
+                value={form.confirmPassword}
+                onChange={updateField}
+                autoComplete="new-password"
+                required
+                minLength="8"
+              />
+              <button
+                type="button"
+                className="auth-input__icon-button"
+                aria-label="Show password"
+                onClick={() => setShowPassword((visible) => !visible)}
+              >
                 <EyeIcon />
               </button>
             </div>
           </label>
 
           <label className="terms-check">
-            <input name="acceptedTerms" type="checkbox" checked={form.acceptedTerms} onChange={updateField} />
+            <input
+              name="acceptedTerms"
+              type="checkbox"
+              checked={form.acceptedTerms}
+              onChange={updateField}
+            />
             <span>
-              I agree to the <a href={buildHashUrl(ROUTES.home)}>Terms of Service</a> and <a href={buildHashUrl(ROUTES.home)}>Privacy Policy</a>.
+              I agree to the <a href={buildHashUrl(ROUTES.home)}>Terms of Service</a> and{' '}
+              <a href={buildHashUrl(ROUTES.home)}>Privacy Policy</a>.
             </span>
           </label>
 
-          {status.message && <p className={`auth-status auth-status--${status.type}`}>{status.message}</p>}
+          {status.message && (
+            <p className={`auth-status auth-status--${status.type}`}>{status.message}</p>
+          )}
 
           <button type="submit" className="auth-submit" disabled={isSubmitting}>
             {isSubmitting ? 'Creating account...' : 'Get Started'}

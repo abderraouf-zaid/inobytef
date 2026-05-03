@@ -1,15 +1,9 @@
-// ─────────────────────────────────────────────────────────
-// ملف constants/routes.js
-// هنا نحفظ كل مسارات الموقع في مكان واحد
-// حتى لو غيرنا مسار، نغيره هنا فقط وينعكس في كل الملفات
-// ─────────────────────────────────────────────────────────
-
 export const ROUTES = {
-  home:        '/',              // الصفحة الرئيسية
-  signup:      '/signup',        // صفحة إنشاء الحساب
-  pricing:     '/pricing',       // صفحة الأسعار
-  verifyEmail: '/verify-email',  // صفحة التحقق من الإيميل
-  confirmBuy:  '/confirm-buy',   // صفحة تأكيد الشراء
-  onboarding:  '/onboarding',    // صفحة الإعداد بعد الشراء
+  home: '/',
+  signup: '/signup',
+  login: '/login',
+  pricing: '/pricing',
+  verifyEmail: '/verify-email',
+  confirmBuy: '/confirm-buy',
+  onboarding: '/onboarding',
 };
-

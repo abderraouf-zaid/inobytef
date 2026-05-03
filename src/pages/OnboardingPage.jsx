@@ -10,7 +10,7 @@ function getApiOrigin() {
   try {
     return new URL(API_BASE_URL).origin;
   } catch {
-    return 'http://localhost:5000';
+    return 'https://inobyte-backend.onrender.com';
   }
 }
 
@@ -350,7 +350,7 @@ function StepVerify({ onNext, onBack, website, setWebsite, setSetupResult }) {
 
       <div className="ob-verify-help">
         <span>i</span>
-        <p>Backend URL: http://localhost:5000/api. Set REACT_APP_API_URL if your API runs elsewhere.</p>
+        <p>Backend URL: {API_BASE_URL}. Set REACT_APP_API_URL if your API runs elsewhere.</p>
       </div>
 
       <div className="ob-nav">

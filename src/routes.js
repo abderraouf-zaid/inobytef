@@ -5,6 +5,7 @@
 
 import LandingPage       from './pages/LandingPage';
 import CreateAccountPage from './pages/CreateAccountPage';
+import LoginPage         from './pages/LoginPage';
 import PricingPage       from './pages/PricingPage';
 import VerifyEmailPage   from './pages/VerifyEmailPage';
 import ConfirmBuyPage    from './pages/ConfirmBuyPage';
@@ -24,6 +25,7 @@ const LEGACY_ROUTES = {
 // كل عنصر: path = المسار، component = الصفحة اللي تظهر
 export const routeList = [
   { path: ROUTES.signup,      component: CreateAccountPage },
+  { path: ROUTES.login,       component: LoginPage         },
   { path: ROUTES.pricing,     component: PricingPage       },
   { path: ROUTES.verifyEmail, component: VerifyEmailPage   },
   { path: ROUTES.confirmBuy,  component: ConfirmBuyPage    },
