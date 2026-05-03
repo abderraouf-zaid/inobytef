@@ -1,6 +1,4 @@
-const DEFAULT_API_URL = window.location.hostname === 'localhost'
-  ? 'http://localhost:5000/api'
-  : 'https://inobyte-backend.onrender.com/api';
+const DEFAULT_API_URL = 'https://inobyte-backend.onrender.com/api';
 const API_BASE_URL = (process.env.REACT_APP_API_URL || DEFAULT_API_URL).replace(/\/$/, '');
 const REQUEST_TIMEOUT_MS = 20000;
 
