@@ -15,7 +15,16 @@ function HeroSection({ showAuthActions }) {
           <a href={buildHashUrl(ROUTES.pricing)}>Pricing</a>
         </div>
 
- 
+        <div className="lp-nav__actions">
+          <button type="button" className="lp-nav__btn">
+            Download App
+          </button>
+          {showAuthActions && (
+            <a href={buildHashUrl(ROUTES.signup)} className="lp-nav__link">
+              Sign in
+            </a>
+          )}
+        </div>
       </nav>
 
       {/* ── Hero Content ── */}

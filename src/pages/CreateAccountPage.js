@@ -4,6 +4,10 @@ import { ROUTES } from '../constants/routes';
 import { authApi } from '../services/api';
 import { buildHashUrl, goTo } from '../utils/navigation';
 
+const sleep = (ms) => new Promise((resolve) => {
+  window.setTimeout(resolve, ms);
+});
+
 function CreateAccountPage() {
   const [form, setForm] = useState({
     name: '',
@@ -24,6 +28,58 @@ function CreateAccountPage() {
     }));
   };
 
+  const openVerifyPage = (email, otp = '') => {
+    localStorage.setItem('accountCreated', 'true');
+    sessionStorage.setItem('pendingVerificationEmail', email);
+    goTo(ROUTES.verifyEmail, `?email=${encodeURIComponent(email)}${otp ? `&otp=${encodeURIComponent(otp)}` : ''}`);
+  };
+
+  const trySendVerificationCode = async (email, retries = 1) => {
+    let lastError = null;
+
+    for (let attempt = 1; attempt <= retries; attempt += 1) {
+      try {
+        const data = await authApi.resendOtp({ email });
+        const otp = data.otpPreview || data.otp || '';
+
+        setStatus({ type: 'success', message: 'Verification code sent. Redirecting...' });
+        window.setTimeout(() => {
+          openVerifyPage(email, otp);
+        }, 700);
+        return;
+      } catch (error) {
+        lastError = error;
+
+        if (/already verified/i.test(error.message)) {
+          throw error;
+        }
+
+        if (attempt < retries) {
+          await sleep(2000);
+        }
+      }
+    }
+
+    throw lastError;
+  };
+
+  const recoverSignup = async (email, originalMessage) => {
+    try {
+      await trySendVerificationCode(email, 4);
+    } catch (error) {
+      if (/already verified/i.test(error.message)) {
+        localStorage.setItem('accountCreated', 'true');
+        setStatus({ type: 'success', message: 'Account already verified. Redirecting...' });
+        window.setTimeout(() => {
+          goTo(ROUTES.home);
+        }, 700);
+        return;
+      }
+
+      setStatus({ type: 'error', message: originalMessage });
+    }
+  };
+
   const createAccount = async (event) => {
     event.preventDefault();
 
@@ -40,20 +96,52 @@ function CreateAccountPage() {
     setIsSubmitting(true);
     setStatus({ type: '', message: '' });
 
+    let handled = false;
+    let signupFallback = null;
+
     try {
+      const email = form.email.trim();
+      signupFallback = window.setTimeout(() => {
+        if (handled) return;
+
+        setStatus({ type: 'success', message: 'Account request received. Preparing verification...' });
+        recoverSignup(email, 'Server took too long to respond. Please try again.').finally(() => {
+          handled = true;
+        });
+      }, 6000);
+
       const data = await authApi.register({
         name: form.name.trim(),
-        email: form.email.trim(),
+        email,
         password: form.password
       });
+      window.clearTimeout(signupFallback);
+
+      if (handled) {
+        return;
+      }
+
+      handled = true;
       const otp = data.otpPreview || data.otp || '';
 
-      sessionStorage.setItem('pendingVerificationEmail', form.email.trim());
       setStatus({ type: 'success', message: 'Account created. Redirecting...' });
       window.setTimeout(() => {
-        goTo(ROUTES.verifyEmail, `?email=${encodeURIComponent(form.email.trim())}${otp ? `&otp=${encodeURIComponent(otp)}` : ''}`);
+        openVerifyPage(email, otp);
       }, 700);
     } catch (error) {
+      if (signupFallback) {
+        window.clearTimeout(signupFallback);
+      }
+
+      const email = form.email.trim();
+
+      if (/already exists|took too long/i.test(error.message)) {
+        handled = true;
+        await recoverSignup(email, error.message);
+        return;
+      }
+
+      handled = true;
       setStatus({ type: 'error', message: error.message });
     } finally {
       setIsSubmitting(false);
@@ -188,10 +276,6 @@ function CreateAccountPage() {
             <ArrowIcon />
           </button>
         </form>
-
-        <p className="auth-switch">
-          Already have an account? <a href={buildHashUrl(ROUTES.login)}>Sign in</a>
-        </p>
 
         <p className="security-note">
           <LockIcon />

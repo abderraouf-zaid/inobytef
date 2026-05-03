@@ -1,10 +1,8 @@
 import { useMemo, useRef, useState } from 'react';
-import BrandLogo from '../components/BrandLogo';
-import AuthBottomBadges from '../components/auth/AuthBottomBadges';
 import { ArrowIcon, LockIcon } from '../components/auth/AuthIcons';
 import { ROUTES } from '../constants/routes';
 import { authApi } from '../services/api';
-import { buildHashUrl, goTo } from '../utils/navigation';
+import { goTo } from '../utils/navigation';
 
 function VerifyEmailPage() {
   const inputRefs = useRef([]);
@@ -67,7 +65,7 @@ function VerifyEmailPage() {
       sessionStorage.removeItem('pendingVerificationEmail');
       setStatus({ type: 'success', message: 'Email verified. Redirecting...' });
       window.setTimeout(() => {
-        goTo(ROUTES.login, `?verified=1&email=${encodeURIComponent(email)}&next=${encodeURIComponent(ROUTES.pricing)}`);
+        goTo(ROUTES.home);
       }, 900);
     } catch (error) {
       setStatus({ type: 'error', message: error.message });
@@ -103,11 +101,7 @@ function VerifyEmailPage() {
   };
 
   return (
-    <main className="auth-page">
-      <a href={buildHashUrl(ROUTES.home)} className="auth-back-button">&larr; Back to home</a>
-
-      <BrandLogo className="brand-logo--auth" />
-
+    <main className="auth-page auth-page--verify">
       <section className="auth-card verify-card">
         <div className="auth-card__header">
           <h1>Verify your email</h1>
@@ -164,9 +158,6 @@ function VerifyEmailPage() {
           </small>
         </div>
       </section>
-
-      <AuthBottomBadges />
-      <p className="auth-copyright auth-copyright--inline">&copy; 2026 CyberLens Security Platform. ISO 27001 Certified.</p>
     </main>
   );
 }

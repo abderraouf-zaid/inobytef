@@ -1,5 +1,7 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://inobyte-backend.onrender.com/api';
-const REGISTER_API_URL = 'http://localhost:5000/api/auth/register';
+const DEFAULT_API_URL = window.location.hostname === 'localhost'
+  ? 'http://localhost:5000/api'
+  : 'https://inobyte-backend.onrender.com/api';
+const API_BASE_URL = (process.env.REACT_APP_API_URL || DEFAULT_API_URL).replace(/\/$/, '');
 const REQUEST_TIMEOUT_MS = 20000;
 
 function getAuthToken() {
@@ -21,13 +23,16 @@ function buildQuery(params = {}) {
 
 async function apiRequest(path, options = {}) {
   const token = Object.prototype.hasOwnProperty.call(options, 'token') ? options.token : getAuthToken();
+  const timeoutMs = options.timeoutMs || REQUEST_TIMEOUT_MS;
   const controller = new AbortController();
-  const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
   const requestUrl = /^https?:\/\//i.test(path) ? path : `${API_BASE_URL}${path}`;
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers
   };
+  const fetchOptions = { ...options };
+  delete fetchOptions.timeoutMs;
 
   if (token && !headers.Authorization) {
     headers.Authorization = `Bearer ${token}`;
@@ -37,7 +42,7 @@ async function apiRequest(path, options = {}) {
 
   try {
     response = await fetch(requestUrl, {
-      ...options,
+      ...fetchOptions,
       headers,
       signal: controller.signal
     });
@@ -61,6 +66,16 @@ async function apiRequest(path, options = {}) {
   }
 
   if (!response.ok) {
+    if (response.status === 401) {
+      sessionStorage.removeItem('authToken');
+      localStorage.removeItem('authToken');
+      throw new Error(data.msg || data.message || 'Your session expired. Please sign in again.');
+    }
+
+    if (response.status >= 500) {
+      throw new Error(data.msg || data.message || 'Server error. Please try again later.');
+    }
+
     throw new Error(data.msg || data.message || data.error || 'Request failed');
   }
 
@@ -76,10 +91,10 @@ function postJson(path, payload, options = {}) {
 }
 
 export const authApi = {
-  register: (payload) => postJson(REGISTER_API_URL, payload, { token: null }),
-  verifyOtp: (payload) => postJson('/auth/verify-otp', payload),
-  resendOtp: (payload) => postJson('/auth/resend-otp', payload),
-  login: (payload) => postJson('/auth/login', payload),
+  register: (payload) => postJson('/auth/register', payload, { token: null, timeoutMs: 60000 }),
+  verifyOtp: (payload) => postJson('/auth/verify-otp', payload, { token: null }),
+  resendOtp: (payload) => postJson('/auth/resend-otp', payload, { token: null, timeoutMs: 60000 }),
+  login: (payload) => postJson('/auth/login', payload, { token: null }),
   dashboard: () => apiRequest('/auth/dashboard'),
   users: () => apiRequest('/auth/users'),
   userDetails: (apiKey) => apiRequest(`/auth/users/${encodeURIComponent(apiKey)}`)

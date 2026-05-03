@@ -269,7 +269,7 @@ function StepVerify({ onNext, onBack, website, setWebsite, setSetupResult }) {
         setCompleted((current) => [...new Set([...current, 'website'])]);
 
         const dashboard = await dashboardApi.get({ websiteId: verifiedWebsite.id });
-        await visualizationApi.dashboard({ websiteId: verifiedWebsite.id, range: '24h', limit: 10 });
+        const visualization = await visualizationApi.dashboard({ websiteId: verifiedWebsite.id, range: '24h', limit: 10 });
         setCompleted((current) => [...new Set([...current, 'dashboard'])]);
 
         let scan = null;
@@ -280,7 +280,7 @@ function StepVerify({ onNext, onBack, website, setWebsite, setSetupResult }) {
           setMessage(`Website verified. Scan can be run later: ${error.message}`);
         }
 
-        setSetupResult({ dashboard, scan, website: verifiedWebsite });
+        setSetupResult({ dashboard, visualization, scan, website: verifiedWebsite });
         setStatus('done');
       } catch (error) {
         setStatus('error');

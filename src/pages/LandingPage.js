@@ -13,8 +13,9 @@ function LandingPage() {
     const hasToken = tokenKeys.some(
       (key) => localStorage.getItem(key) || sessionStorage.getItem(key),
     );
+    const hasCreatedAccount = localStorage.getItem('accountCreated') === 'true';
 
-    setShowAuthActions(!hasToken);
+    setShowAuthActions(!hasToken && !hasCreatedAccount);
   }, []);
 
   return (
