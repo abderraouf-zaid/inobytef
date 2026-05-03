@@ -1,17 +1,28 @@
 import { useMemo, useRef, useState } from 'react';
+import BrandLogo from '../components/BrandLogo';
 import AuthBottomBadges from '../components/auth/AuthBottomBadges';
-import { ArrowIcon, LockIcon, MailIcon, ShieldIcon } from '../components/auth/AuthIcons';
+import { ArrowIcon, LockIcon } from '../components/auth/AuthIcons';
+import { ROUTES } from '../constants/routes';
 import { authApi } from '../services/api';
+import { buildHashUrl, goTo } from '../utils/navigation';
 
 function VerifyEmailPage() {
   const inputRefs = useRef([]);
-  const email = useMemo(() => {
+  const params = useMemo(() => {
     const hashQuery = window.location.hash.includes('?') ? window.location.hash.split('?')[1] : '';
-    const params = new URLSearchParams(hashQuery || window.location.search);
-    return params.get('email') || sessionStorage.getItem('pendingVerificationEmail') || '';
+    return new URLSearchParams(hashQuery || window.location.search);
   }, []);
-  const [digits, setDigits] = useState(['', '', '', '', '', '']);
-  const [status, setStatus] = useState({ type: '', message: '' });
+  const email = params.get('email') || sessionStorage.getItem('pendingVerificationEmail') || '';
+  const otpPreview = params.get('otp') || '';
+  const [digits, setDigits] = useState(() => {
+    const cleanOtp = otpPreview.replace(/\D/g, '').slice(0, 6);
+    return Array.from({ length: 6 }, (_, index) => cleanOtp[index] || '');
+  });
+  const [status, setStatus] = useState(() => (
+    otpPreview
+      ? { type: 'success', message: `Local verification code: ${otpPreview}` }
+      : { type: '', message: '' }
+  ));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResending, setIsResending] = useState(false);
 
@@ -49,11 +60,14 @@ function VerifyEmailPage() {
       if (token) {
         sessionStorage.setItem('authToken', token);
       }
+      if (data.apiKey) {
+        sessionStorage.setItem('apiKey', data.apiKey);
+      }
       sessionStorage.setItem('userEmail', email);
       sessionStorage.removeItem('pendingVerificationEmail');
-      setStatus({ type: 'success', message: 'Email verified. Redirecting to pricing...' });
+      setStatus({ type: 'success', message: 'Email verified. Redirecting...' });
       window.setTimeout(() => {
-        window.location.href = '/pricing';
+        goTo(ROUTES.pricing, `?verified=1&email=${encodeURIComponent(email)}`);
       }, 900);
     } catch (error) {
       setStatus({ type: 'error', message: error.message });
@@ -72,8 +86,15 @@ function VerifyEmailPage() {
     setStatus({ type: '', message: '' });
 
     try {
-      await authApi.resendOtp({ email });
-      setStatus({ type: 'success', message: 'New verification code sent.' });
+      const data = await authApi.resendOtp({ email });
+      const cleanOtp = String(data.otpPreview || '').replace(/\D/g, '').slice(0, 6);
+
+      if (cleanOtp) {
+        setDigits(Array.from({ length: 6 }, (_, index) => cleanOtp[index] || ''));
+        setStatus({ type: 'success', message: `Local verification code: ${cleanOtp}` });
+      } else {
+        setStatus({ type: 'success', message: 'New verification code sent.' });
+      }
     } catch (error) {
       setStatus({ type: 'error', message: error.message });
     } finally {
@@ -83,21 +104,15 @@ function VerifyEmailPage() {
 
   return (
     <main className="auth-page">
-      <a href="/" className="auth-back-button">&larr; Back to home</a>
+      <a href={buildHashUrl(ROUTES.home)} className="auth-back-button">&larr; Back to home</a>
 
-      <div className="verify-shield">
-        <ShieldIcon />
-      </div>
+      <BrandLogo className="brand-logo--auth" />
 
       <section className="auth-card verify-card">
         <div className="auth-card__header">
           <h1>Verify your email</h1>
           <p>
-            We&apos;ve sent a 6-digit verification code to
-            <strong>
-              <MailIcon />
-              {email || 'your email address'}
-            </strong>
+            We&apos;ve sent a 6-digit verification code to your email address.
           </p>
         </div>
 
@@ -129,7 +144,7 @@ function VerifyEmailPage() {
 
           <div className="expire-note">
             <LockIcon />
-            <p>This code will expire in 10 minutes. ShieldFlow will never ask for your password via email.</p>
+            <p>This code will expire in 10 minutes. CyberLens will never ask for your password via email.</p>
           </div>
 
           {status.message && <p className={`auth-status auth-status--${status.type}`}>{status.message}</p>}
@@ -151,7 +166,7 @@ function VerifyEmailPage() {
       </section>
 
       <AuthBottomBadges />
-      <p className="auth-copyright auth-copyright--inline">&copy; 2026 ShieldFlow Security Platform. ISO 27001 Certified.</p>
+      <p className="auth-copyright auth-copyright--inline">&copy; 2026 CyberLens Security Platform. ISO 27001 Certified.</p>
     </main>
   );
 }

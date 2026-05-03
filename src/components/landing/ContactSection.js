@@ -1,67 +1,33 @@
-import ContactIcon from '../icons/ContactIcon';
-import { contactItems } from '../../data/landingData';
+import { ROUTES } from '../../constants/routes';
+import { buildHashUrl } from '../../utils/navigation';
 
 function ContactSection() {
   return (
-    <section className="contact-section">
-      <div className="contact-copy">
-        <h2>
-          Ready to fortify your
-          <br />
-          application?
+    <section className="lp-cta" id="contact">
+      <div className="lp-cta__inner">
+        <span className="lp-hero__badge">Ready to get started?</span>
+        <h2 className="lp-cta__title">
+          Protect your business<br />before it's too late.
         </h2>
-        <p>
-          Join our exclusive Early Access program and get 3 months of
-          enterprise-grade security for free. Our engineering team will
-          personally assist with your initial setup.
+        <p className="lp-cta__sub">
+          Join hundreds of growing companies using CyberLens to protect their
+          digital future. Get started today with a free security scan.
         </p>
 
-        <div className="contact-list">
-          {contactItems.map((item) => (
-            <div key={item.title} className="contact-item">
-              <span className="contact-item__icon">
-                <ContactIcon type={item.icon} />
-              </span>
-              <div>
-                <strong>{item.title}</strong>
-                <span>{item.description}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="plans-offer-card">
-        <div className="plans-offer-card__icon" aria-hidden="true">
-          <span>&#127873;</span>
-          <i>&#10023;</i>
+        <div className="lp-cta__actions">
+          <a href={buildHashUrl(ROUTES.signup)} className="lp-btn lp-btn--primary">
+            Start My Free Scan →
+          </a>
+          <a href={buildHashUrl(ROUTES.pricing)} className="lp-btn lp-btn--outline">
+            View Offre
+          </a>
         </div>
 
-        <h3>Explore Our Plans</h3>
-        <strong>Explore Our Plans</strong>
-        <p>
-          Discover the perfect security plan tailored for your application&apos;s
-          needs.
-        </p>
-
-        <div className="plans-offer-card__tiers" aria-hidden="true">
-          <span />
-          <span />
-          <span />
+        <div className="lp-cta__trust">
+          <span>🔒 No Credit Card Required</span>
+          <span>🛡 SOC 2 Compliant</span>
+          <span>⚡ Setup in 5 minutes</span>
         </div>
-
-        <div className="plans-offer-card__labels" aria-hidden="true">
-          <span>CORE</span>
-          <span>PRO</span>
-          <span>ENTERPRISE</span>
-        </div>
-
-        <a href="/pricing" className="plans-offer-card__button">
-          Browse Offers
-          <span aria-hidden="true">&rarr;</span>
-        </a>
-
-        <small>&#9889; Special launch pricing available for a limited time</small>
       </div>
     </section>
   );

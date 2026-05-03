@@ -7,14 +7,14 @@ function VisibilitySection() {
         <div>
           <h2>Full Visibility</h2>
           <p>
-            A unified dashboard that gives you the bird&apos;s eye view and the
-            molecular detail of every request.
+            A unified dashboard that gives your team a clear operational view
+            of every request, signal, and blocked threat.
           </p>
         </div>
 
         <div className="visibility-badges">
           <span>Live Updates</span>
-          <span>Threat Vector: HIGH</span>
+          <span>Threat Vector: High</span>
         </div>
       </div>
 

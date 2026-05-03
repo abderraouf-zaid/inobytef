@@ -1,63 +1,72 @@
 export const features = [
   {
     icon: 'scanner',
-    title: 'Vulnerability Scanner',
+    title: 'Smart Scan Engine',
     description:
-      'Automated deep-scans for XSS, SQL Injection, and common misconfigurations before they reach production.',
+      'Deep-issue scanning of your digital perimeter that identifies vulnerabilities before hackers do.',
   },
   {
     icon: 'monitoring',
-    title: 'Real-time Monitoring',
+    title: 'Interactive Dashboard',
     description:
-      'Live traffic visualization and anomaly detection using high-frequency sampling and heuristics.',
-  },
-  {
-    icon: 'alerts',
-    title: 'Smart Alerts',
-    description:
-      'Intelligent notification routing via Slack, PagerDuty, or Email only for threats that actually matter.',
+      'A birds-eye view of your entire security posture, grouped into an AI-first insight view.',
   },
   {
     icon: 'ai',
     title: 'AI Explanations',
     description:
-      'Leverage LLM-driven insights to understand how a threat occurred and get instant patch suggestions.',
+      'Complex technical threats translated into plain business language you can act on immediately.',
+  },
+  {
+    icon: 'alerts',
+    title: 'Smart Recommendations',
+    description:
+      'Prioritized, step-by-step patch instructions on what to fix first based on actual business risk.',
   },
   {
     icon: 'behavior',
-    title: 'Login Behavior Tracking',
+    title: 'Assets Visibility',
     description:
-      'Detect impossible travel, credential stuffing, and unusual user agent transitions instantly.',
+      'Automatic discovery of connected devices, websites, and cloud accounts in one place.',
   },
   {
     icon: 'upload',
-    title: 'File Upload Protection',
+    title: 'Executive Reports',
     description:
-      'Sandboxed file scanning with multi-engine malware analysis for every upload to your servers.',
+      'Professional, board-ready PDF reports designed for non-technical stakeholders.',
   },
 ];
 
 export const steps = [
   {
-    icon: 'connect',
-    label: 'STEP 01',
-    title: 'Connect your website',
+    title: 'Connect Your Assets',
     description:
-      'Simply integrate our SDK or use our cloud proxy to route your traffic through our secure edge.',
+      'Plug in your domain, cloud providers, and key applications. No installation required.',
   },
   {
-    icon: 'shield',
-    label: 'STEP 02',
-    title: 'Scan & monitor activity',
+    title: 'Initial Baseline Scan',
     description:
-      'Our engine starts baseline profiling and active scanning immediately, building your security map.',
+      'Our engine performs a comprehensive sweep to understand your current security posture.',
   },
   {
-    icon: 'check',
-    label: 'STEP 03',
-    title: 'Receive alerts & insights',
+    title: 'Identify Critical Risks',
     description:
-      'Get categorized threat reports and actionable fix suggestions delivered directly to your team.',
+      'We highlight high-impact vulnerabilities that could lead to data loss or downtime.',
+  },
+  {
+    title: 'AI Insight Generation',
+    description:
+      'Complex risks are broken down into business-focused impacts and easy summaries.',
+  },
+  {
+    title: 'Guided Remediation',
+    description:
+      'Follow clear, non-technical instructions to patch gaps and strengthen your walls.',
+  },
+  {
+    title: 'Continuous Visibility',
+    description:
+      'Regular rescans ensure you stay protected as new threats emerge in the landscape.',
   },
 ];
 
@@ -90,7 +99,7 @@ export const contactItems = [
   {
     icon: 'support',
     title: 'Direct Support',
-    description: 'access@sentinelshield.ai',
+    description: 'access@cyberlens.ai',
   },
   {
     icon: 'global',

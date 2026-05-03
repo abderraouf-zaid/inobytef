@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import AuthBottomBadges from '../components/auth/AuthBottomBadges';
-import { ArrowIcon, CircleIcon, EyeIcon, GitHubIcon, LockIcon, MailIcon, UserIcon } from '../components/auth/AuthIcons';
+import { ArrowIcon, EyeIcon, GitHubIcon, LockIcon, MailIcon, UserIcon } from '../components/auth/AuthIcons';
+import { ROUTES } from '../constants/routes';
 import { authApi } from '../services/api';
+import { buildHashUrl, goTo } from '../utils/navigation';
 
 function CreateAccountPage() {
   const [form, setForm] = useState({
@@ -31,6 +32,11 @@ function CreateAccountPage() {
       return;
     }
 
+    if (form.password.length < 8) {
+      setStatus({ type: 'error', message: 'Password must be at least 8 characters.' });
+      return;
+    }
+
     if (!form.acceptedTerms) {
       setStatus({ type: 'error', message: 'Please accept the terms before creating your account.' });
       return;
@@ -53,7 +59,8 @@ function CreateAccountPage() {
         sessionStorage.setItem('authToken', token);
       }
 
-      window.location.href = '/pricing';
+      const otpQuery = data.otpPreview ? `&otp=${encodeURIComponent(data.otpPreview)}` : '';
+      goTo(ROUTES.verifyEmail, `?email=${encodeURIComponent(form.email.trim())}${otpQuery}`);
     } catch (error) {
       setStatus({ type: 'error', message: error.message });
     } finally {
@@ -62,14 +69,7 @@ function CreateAccountPage() {
   };
 
   return (
-    <main className="auth-page">
-      <a href="/" className="auth-back-button">&larr; Back to home</a>
-
-      <div className="security-pill">
-        <CircleIcon />
-        <span>ENTERPRISE GRADE SECURITY</span>
-      </div>
-
+    <main className="auth-page auth-page--entry">
       <section className="auth-card auth-card--signup">
         <div className="auth-card__header">
           <h1>Create your account</h1>
@@ -112,7 +112,7 @@ function CreateAccountPage() {
             <span>Password</span>
             <div className="auth-input">
               <LockIcon />
-              <input name="password" type={showPassword ? 'text' : 'password'} placeholder="********" value={form.password} onChange={updateField} autoComplete="new-password" required minLength="6" />
+              <input name="password" type={showPassword ? 'text' : 'password'} placeholder="********" value={form.password} onChange={updateField} autoComplete="new-password" required minLength="8" />
               <button type="button" className="auth-input__icon-button" aria-label="Show password" onClick={() => setShowPassword((visible) => !visible)}>
                 <EyeIcon />
               </button>
@@ -123,7 +123,7 @@ function CreateAccountPage() {
             <span>Confirm Password</span>
             <div className="auth-input">
               <LockIcon />
-              <input name="confirmPassword" type={showPassword ? 'text' : 'password'} placeholder="********" value={form.confirmPassword} onChange={updateField} autoComplete="new-password" required minLength="6" />
+              <input name="confirmPassword" type={showPassword ? 'text' : 'password'} placeholder="********" value={form.confirmPassword} onChange={updateField} autoComplete="new-password" required minLength="8" />
               <button type="button" className="auth-input__icon-button" aria-label="Show password" onClick={() => setShowPassword((visible) => !visible)}>
                 <EyeIcon />
               </button>
@@ -133,7 +133,7 @@ function CreateAccountPage() {
           <label className="terms-check">
             <input name="acceptedTerms" type="checkbox" checked={form.acceptedTerms} onChange={updateField} />
             <span>
-              I agree to the <a href="/">Terms of Service</a> and <a href="/">Privacy Policy</a>.
+              I agree to the <a href={buildHashUrl(ROUTES.home)}>Terms of Service</a> and <a href={buildHashUrl(ROUTES.home)}>Privacy Policy</a>.
             </span>
           </label>
 
@@ -146,7 +146,7 @@ function CreateAccountPage() {
         </form>
 
         <p className="auth-switch">
-          Already have an account? <a href="/login">Sign in</a>
+          Already have an account? <a href={buildHashUrl(ROUTES.login)}>Sign in</a>
         </p>
 
         <p className="security-note">
@@ -154,9 +154,6 @@ function CreateAccountPage() {
           Your data is protected with advanced security.
         </p>
       </section>
-
-      <AuthBottomBadges />
-      <p className="auth-copyright auth-copyright--inline">&copy; 2026 ShieldFlow Security Platform.</p>
     </main>
   );
 }

@@ -1,33 +1,43 @@
+import { useEffect, useState } from 'react';
 import './App.css';
+<<<<<<< HEAD
 import LandingPage from './pages/LandingPage';
 import CreateAccountPage from './pages/CreateAccountPage';
 import LoginPage from './pages/LoginPage';
 import PricingPage from './pages/PricingPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import FlowSetupWizard from './pages/FlowSetup';
+=======
+import { LandingPage, normalizePath, routeList } from './routes';
+
+function getCurrentPath() {
+  // نقرأ المسار من hash أو من pathname حتى يدعم المشروع الطريقتين.
+  const hashPath = window.location.hash.replace(/^#/, '').split('?')[0];
+  return normalizePath(hashPath || window.location.pathname);
+}
+>>>>>>> 191bd18 (jackkkk)
 
 function App() {
-  const hashPath = window.location.hash.replace(/^#/, '').split('?')[0];
-  const path = hashPath || window.location.pathname;
+  const [currentPath, setCurrentPath] = useState(getCurrentPath);
 
-  if (path === '/signup') {
-    return <CreateAccountPage />;
-  }
+  useEffect(() => {
+    // عند تغيير الرابط من الأزرار، نحدث الصفحة بدون React Router.
+    const updatePath = () => setCurrentPath(getCurrentPath());
 
-  if (path === '/login') {
-    return <LoginPage />;
-  }
-  if (path === '/setup' || path === '/Setup') {
-    return <FlowSetupWizard />;
-  }
+    window.addEventListener('hashchange', updatePath);
+    window.addEventListener('popstate', updatePath);
 
-  if (path === '/pricing') {
+    return () => {
+      window.removeEventListener('hashchange', updatePath);
+      window.removeEventListener('popstate', updatePath);
+    };
+  }, []);
 
-    return <PricingPage />;
-  }
+  const activeRoute = routeList.find((route) => route.path === currentPath);
 
-  if (path === '/verify-email') {
-    return <VerifyEmailPage />;
+  if (activeRoute) {
+    const Page = activeRoute.component;
+    return <Page />;
   }
 
   return <LandingPage />;

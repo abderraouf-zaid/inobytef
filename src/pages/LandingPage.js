@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
 import HeroSection from '../components/landing/HeroSection';
-import PlatformSection from '../components/landing/PlatformSection';
+import SimplerSection from '../components/landing/SimplerSection';
 import FeaturesSection from '../components/landing/FeaturesSection';
 import StepsSection from '../components/landing/StepsSection';
-import ComparisonSection from '../components/landing/ComparisonSection';
-import VisibilitySection from '../components/landing/VisibilitySection';
 import ContactSection from '../components/landing/ContactSection';
 
 function LandingPage() {
@@ -20,13 +18,11 @@ function LandingPage() {
   }, []);
 
   return (
-    <main className="landing-page">
+    <main className="landing-page landing-page--visily">
       <HeroSection showAuthActions={showAuthActions} />
-      <PlatformSection />
+      <SimplerSection />
       <FeaturesSection />
       <StepsSection />
-      <ComparisonSection />
-      <VisibilitySection />
       <ContactSection />
     </main>
   );

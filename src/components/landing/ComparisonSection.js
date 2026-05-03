@@ -1,4 +1,6 @@
 import { comparisonRows } from '../../data/landingData';
+import { ROUTES } from '../../constants/routes';
+import { buildHashUrl } from '../../utils/navigation';
 
 function ComparisonSection() {
   return (
@@ -15,7 +17,7 @@ function ComparisonSection() {
           Our difference lies in the depth of our telemetry and the intelligence of
           our response layer.
         </p>
-        <a href="/pricing" className="secondary-button">
+        <a href={buildHashUrl(ROUTES.pricing)} className="secondary-button">
           Explore the Platform
           <span aria-hidden="true">&rarr;</span>
         </a>

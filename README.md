@@ -1,4 +1,4 @@
-# Inobytef
+# CyberLens
 
 Clean React starter project, ready for development.
 

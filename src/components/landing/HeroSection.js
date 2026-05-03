@@ -1,92 +1,70 @@
+import BrandLogo from '../BrandLogo';
+import { ROUTES } from '../../constants/routes';
+import { buildHashUrl } from '../../utils/navigation';
+
 function HeroSection({ showAuthActions }) {
   return (
-    <section className="hero">
-      {showAuthActions && (
-        <div className="landing-auth-actions">
-          <a href="/login" className="landing-auth-actions__link">
-            Login
-          </a>
-          <a href="/signup" className="landing-auth-actions__button">
-            Sign Up
-          </a>
+    <section className="lp-hero">
+      {/* ── Navbar ── */}
+      <nav className="lp-nav">
+        <BrandLogo className="brand-logo--hero" />
+
+        <div className="lp-nav__links">
+          <a href="#features">Features</a>
+          <a href="#journey">How It Works</a>
+          <a href={buildHashUrl(ROUTES.pricing)}>Pricing</a>
         </div>
-      )}
 
-      <div className="hero__content">
-        <span className="tag">CYBERSECURITY REINVENTED</span>
+        {showAuthActions && (
+          <div className="lp-nav__actions">
+            <a href={buildHashUrl(ROUTES.login)} className="lp-nav__link">
+              Sign In
+            </a>
+            <button type="button" className="lp-nav__btn">
+              Download App
+            </button>
+          </div>
+        )}
+      </nav>
 
-        <h1 className="hero__title">
-          See What
-          <br />
-          Others
-          <br />
-          <em>Can&apos;t See</em>
+      {/* ── Hero Content ── */}
+      <div className="lp-hero__body">
+        <span className="lp-hero__badge">✦ AI-Powered Cybersecurity for SMEs</span>
+
+        <h1 className="lp-hero__title">
+          See Risk.<br />
+          <em>Act</em> with Clarity.
         </h1>
 
-        <p className="hero__text">
-          Gain real-time visibility into your web application&apos;s security posture.
-          Monitor, detect, and neutralize threats before they impact your business.
+        <p className="lp-hero__sub">
+          Transform complex cybersecurity risks into simple, actionable insights —
+          no security expertise required.
         </p>
 
-        <a href={showAuthActions ? '/signup' : '/pricing'} className="primary-button">
-          Get Started
-          <span aria-hidden="true">&rarr;</span>
-        </a>
+        <div className="lp-hero__actions">
+          <a
+            href={buildHashUrl(showAuthActions ? ROUTES.signup : ROUTES.pricing)}
+            className="lp-btn lp-btn--primary"
+          >
+            Start Free Trial →
+          </a>
+          <a href={buildHashUrl(ROUTES.pricing)} className="lp-btn lp-btn--ghost">
+            View Pricing
+          </a>
+        </div>
 
-        <div className="trust">
-          <div className="trust__avatars" aria-hidden="true">
-            <span className="avatar avatar--one" />
-            <span className="avatar avatar--two" />
-            <span className="avatar avatar--three" />
-            <span className="avatar avatar--four" />
-            <span className="avatar avatar--five" />
+        <div className="lp-hero__trust">
+          <div className="lp-trust__avatars" aria-hidden="true">
+            <span className="lp-avatar lp-avatar--one" />
+            <span className="lp-avatar lp-avatar--two" />
+            <span className="lp-avatar lp-avatar--three" />
+            <span className="lp-avatar lp-avatar--four" />
+            <span className="lp-avatar lp-avatar--five" />
           </div>
-
-          <p>
-            Trusted by <strong>500+</strong> DevSecOps teams
-          </p>
+          <p>Trusted by <strong>500+ SMEs</strong> worldwide</p>
         </div>
       </div>
 
-      <div className="monitor-card">
-        <div className="monitor-card__header">
-          <span className="monitor-dot" />
-          <p>LIVE SECURITY MONITOR</p>
-        </div>
-
-        <div className="monitor-card__body">
-          <span className="monitor-label">Active Threats</span>
-          <div className="monitor-main-row">
-            <strong>0 Detected</strong>
-            <div className="shield-badge">&#10003;</div>
-          </div>
-
-          <div className="progress-bar">
-            <span />
-          </div>
-
-          <div className="monitor-progress-row">
-            <small>SCAN PROGRESS</small>
-            <small>67% COMPLETE</small>
-          </div>
-        </div>
-
-        <div className="floating-card floating-card--latency">
-          <span className="floating-card__icon">&#8767;</span>
-          <div>
-            <small>LATENCY</small>
-            <strong>24ms</strong>
-          </div>
-        </div>
-
-        <div className="floating-card floating-card--alert">
-          <span className="floating-card__icon">&#9684;</span>
-          <div>
-            <small>SMART ALERT</small>
-            <strong>IP Rotation Detected</strong>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

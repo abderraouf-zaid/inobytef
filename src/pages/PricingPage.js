@@ -1,4 +1,8 @@
+import { useState } from 'react';
+import BrandLogo from '../components/BrandLogo';
 import { pricingPlans } from '../data/pricingData';
+import { ROUTES } from '../constants/routes';
+import { goTo } from '../utils/navigation';
 
 function PricingIcon({ type }) {
   if (type === 'bolt') {
@@ -26,15 +30,23 @@ function PricingIcon({ type }) {
   );
 }
 
-function PricingCard({ plan }) {
+function PricingCard({ plan, isActive, onActivate }) {
   const choosePlan = () => {
-    window.location.href = `/setup?plan=${plan.name.toLowerCase()}`;
+    goTo(ROUTES.confirmBuy, `?plan=${encodeURIComponent(plan.name.toLowerCase())}`);
   };
 
   return (
     <article
-      className={`pricing-card ${plan.popular ? 'pricing-card--popular' : ''}`}
-      onClick={choosePlan}
+      className={`pricing-card ${plan.popular ? 'pricing-card--popular' : ''} ${isActive ? 'pricing-card--active' : ''}`}
+      onClick={onActivate}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onActivate();
+        }
+      }}
     >
       {plan.popular && <span className="popular-badge">Most Popular</span>}
 
@@ -47,8 +59,9 @@ function PricingCard({ plan }) {
 
       <div className="pricing-card__price">
         <strong>{plan.price}</strong>
-        <span>/month</span>
+        <span>/ plan</span>
       </div>
+      <p className="pricing-card__trial">{plan.trial}</p>
 
       <div className="pricing-card__line" />
 
@@ -61,28 +74,44 @@ function PricingCard({ plan }) {
         ))}
       </ul>
 
+      <button
+        className={`pricing-card__cta ${plan.popular ? 'pricing-card__cta--primary' : ''}`}
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          choosePlan();
+        }}
+      >
+        Start 3-Day Free Trial
+      </button>
     </article>
   );
 }
 
 function PricingPage() {
+  const [activePlan, setActivePlan] = useState(() => {
+    const popularIndex = pricingPlans.findIndex((plan) => plan.popular);
+    return popularIndex >= 0 ? popularIndex : 0;
+  });
+
   return (
-    <main className="pricing-page">
+    <main className="pricing-page pricing-page--interactive">
+      <BrandLogo className="brand-logo--pricing" />
+
       <section className="pricing-hero">
         <span>Pricing Plans</span>
-        <h1>
-          Invest in your platform&apos;s
-          <em>security</em>
-        </h1>
-        <p>
-          Choose the perfect plan for your needs. Scale your security posture with
-          real-time monitoring and AI-driven threat analysis.
-        </p>
+        <h1>Simple, Transparent Pricing</h1>
+        <p>Choose one plan based on your preferred duration: monthly, quarterly, or yearly.</p>
       </section>
 
       <section className="pricing-cards">
-        {pricingPlans.map((plan) => (
-          <PricingCard key={plan.name} plan={plan} />
+        {pricingPlans.map((plan, index) => (
+          <PricingCard
+            key={plan.name}
+            plan={plan}
+            isActive={activePlan === index}
+            onActivate={() => setActivePlan(index)}
+          />
         ))}
       </section>
     </main>

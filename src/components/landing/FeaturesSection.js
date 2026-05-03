@@ -3,11 +3,12 @@ import { features } from '../../data/landingData';
 
 function FeaturesSection() {
   return (
-    <section className="features-section">
-      <h2>Everything you need to stay ahead</h2>
+    <section id="features" className="features-section">
+      <span className="capability-tag">Capabilities</span>
+      <h2>Powerful Security, Simplified</h2>
       <p className="section-subtitle">
-        A comprehensive suite of security tools designed for the modern web
-        infrastructure.
+        Everything you need to monitor and mitigate risk without hiring a
+        full-time security analyst.
       </p>
 
       <div className="features-grid">
